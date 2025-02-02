@@ -1,10 +1,7 @@
-// import useSWR from "swr";
-
 // import { Table } from "home/src/components/Table";
-// import type { Product } from "home/src/types";
 
 // function Product() {
-//   const { data = [], error, isLoading } = useSWR("https://fakestoreapi.com/products");
+//
 
 //   if (error) return <div>Error loading data</div>;
 //   if (isLoading) return <div>Loading...</div>;
@@ -18,15 +15,15 @@
 // }
 
 // export default Product;
+"use client";
 
 import React from "react";
+import useSWR, { useSWRConfig } from "swr";
+import type { Product } from "home/src/types";
 
-//
-
-//
 import {
-  Column,
-  Table,
+  // Column,
+  // Table,
   ColumnDef,
   useReactTable,
   getCoreRowModel,
@@ -35,6 +32,21 @@ import {
   flexRender,
   RowData,
 } from "@tanstack/react-table";
+import { API_HOST } from "home/src/constants";
+import AddProducts from "home/src/components/AddProducts";
+
+import { Geist, Geist_Mono } from "next/font/google";
+import { Button } from "flowbite-react";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -42,16 +54,7 @@ declare module "@tanstack/react-table" {
   }
 }
 
-type Person = {
-  firstName: string;
-  lastName: string;
-  age: number;
-  visits: number;
-  status: string;
-  progress: number;
-};
-
-const defaultColumn: Partial<ColumnDef<Person>> = {
+const DefaultColumn: Partial<ColumnDef<Product>> = {
   cell: ({ getValue, row: { index }, column: { id }, table }) => {
     const initialValue = getValue();
     const [value, setValue] = React.useState(initialValue);
@@ -93,7 +96,7 @@ const defaultColumn: Partial<ColumnDef<Person>> = {
         onChange={(e) => setValue(e.target.value)}
         onBlur={saveValue}
         onKeyDown={handleKeyDown}
-        className="border p-1 w-full "
+        className="border p-1 w-full"
       />
     ) : (
       <div
@@ -108,27 +111,81 @@ const defaultColumn: Partial<ColumnDef<Person>> = {
   },
 };
 
-
 function Product() {
-  function makeData(count: number): Person[] {
-    return [...Array(count).keys()].map((index) => ({
-      firstName: "First Name ",
-      lastName: "Last Name " + index,
-      age: 6,
-      visits: 8,
-      status:  "relationship" ,
-      progress: 6,
-    }));
-  }
-  const columns = React.useMemo<ColumnDef<Person>[]>(
+  const { data = [], error, isLoading } = useSWR(API_HOST);
+  const { mutate } = useSWRConfig();
+  const [editData, setEditData] = React.useState<Product | null>(null);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const columns = React.useMemo<ColumnDef<Product>[]>(
     () => [
       {
-        header: "Name",
+        header: "Products",
         footer: (props) => props.column.id,
         columns: [
           {
-            accessorKey: "firstName",
+            accessorKey: "title",
             footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "price",
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "description",
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "category",
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "quantity",
+            footer: (props) => props.column.id,
+          },
+          {
+            accessorKey: "Actions",
+            footer: (props) => props.column.id,
+            cell: (info) => {
+              return (
+                <div className="flex space-x-2">
+                  <button
+                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700"
+                    onClick={() => {
+                      console.log("Edit", info.row.original);
+
+                      setEditData(info.row.original);
+                      setOpen(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700"
+                    onClick={async () => {
+                      console.log("Delete", info.row.original);
+                      try {
+                        const response = await fetch(`${API_HOST}/${info.row.original.id}`, {
+                          method: "DELETE",
+                        });
+                        if (!response.ok) {
+                          throw new Error("Failed to delete data");
+                        }
+                        // Fetch the updated data from the API
+                        mutate(API_HOST);
+                      } catch (error) {
+                        console.error("Error deleting data:", error);
+                      }
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              );
+            },
           },
           // {
           //   accessorFn: (row) => row.lastName,
@@ -138,75 +195,86 @@ function Product() {
           // },
         ],
       },
-      {
-        header: "Info",
-        footer: (props) => props.column.id,
-        columns: [
-          {
-            accessorKey: "age",
-            header: () => "Age",
-            footer: (props) => props.column.id,
-          },
-          {
-            header: "More Info",
-            columns: [
-              {
-                accessorKey: "visits",
-                header: () => <span>Visits</span>,
-                footer: (props) => props.column.id,
-              },
-              {
-                accessorKey: "status",
-                header: "Status",
-                footer: (props) => props.column.id,
-              },
-              {
-                accessorKey: "progress",
-                header: "Profile Progress",
-                footer: (props) => props.column.id,
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   header: "Info",
+      //   footer: (props) => props.column.id,
+      //   columns: [
+      //     {
+      //       accessorKey: "age",
+      //       header: () => "Age",
+      //       footer: (props) => props.column.id,
+      //     },
+      //     {
+      //       header: "More Info",
+      //       columns: [
+      //         {
+      //           accessorKey: "visits",
+      //           header: () => <span>Visits</span>,
+      //           footer: (props) => props.column.id,
+      //         },
+      //         {
+      //           accessorKey: "status",
+      //           header: "Status",
+      //           footer: (props) => props.column.id,
+      //         },
+      //         {
+      //           accessorKey: "progress",
+      //           header: "Profile Progress",
+      //           footer: (props) => props.column.id,
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
     ],
     []
   );
 
-  const [data, setData] = React.useState(() => makeData(1000));
+  // const [data, setData] = React.useState(() => makeData(1000));
 
   const table = useReactTable({
     data,
     columns,
-    defaultColumn,
+    defaultColumn: DefaultColumn,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    // autoResetPageIndex,
-    // Provide our updateData function to our table meta
     meta: {
-      updateData: (rowIndex, columnId, value) => {
-        // Skip page index reset until after next rerender
-        // skipAutoResetPageIndex();
-        // setData((old) =>
-        //   old.map((row, index) => {
-        //     if (index === rowIndex) {
-        //       return {
-        //         ...old[rowIndex]!,
-        //         [columnId]: value,
-        //       };
-        //     }
-        //     return row;
-        //   })
-        // );
+      updateData: async (rowIndex, columnId, value) => {
+        console.log({ rowIndex, columnId, value });
+        try {
+          const response = await fetch(`${API_HOST}/${data[rowIndex].id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...data[rowIndex],
+              [columnId]: value,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error("Failed to update data");
+          }
+          await response.json();
+          // Fetch the updated data from the API
+          mutate(API_HOST);
+        } catch (error) {
+          console.error("Error updating data:", error);
+        }
       },
     },
     debugTable: true,
   });
 
   return (
-    <div className="p-2">
+    <div
+      className={`${geistSans.variable} ${geistMono.variable} p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
+    >
       <div className="h-2" />
+
+      <Button onClick={() => setOpen(true)}>{"Add Product"}</Button>
+      <AddProducts open={open} editMode={true} editData={editData} handleClose={handleClose} />
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -12,6 +12,7 @@
     "@headlessui/react": "^2.2.0",
     "@tanstack/react-table": "^8.20.6",
     "flowbite-react": "^0.10.2",
+    "json-server": "^1.0.0-beta.3",
     "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
