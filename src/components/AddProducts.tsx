@@ -3,16 +3,8 @@ import { useForm } from "react-hook-form";
 import useSWR, { mutate } from "swr";
 import { Modal, Button } from "flowbite-react";
 import FormInput from "./FormInput";
-
-export type Product = {
-  id: string;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  image: string;
-  quantity: number;
-};
+import { API_HOST } from "../constants";
+import { Product } from "../types";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -20,12 +12,11 @@ interface AddProductsProps {
   open: boolean;
   editMode: boolean;
   editData: Product | null;
-  handleClose : () => void;
+  handleClose: () => void;
 }
 
-const AddProducts: React.FC<AddProductsProps> = ({ open,handleClose,  editMode, editData }) => {
-  const { data: products, error } = useSWR("http://localhost:8080/products", fetcher);
-
+const AddProducts: React.FC<AddProductsProps> = ({ open, handleClose, editMode, editData }) => {
+  const { data: products, error } = useSWR(API_HOST, fetcher);
 
   const {
     register,
@@ -45,21 +36,21 @@ const AddProducts: React.FC<AddProductsProps> = ({ open,handleClose,  editMode, 
     try {
       if (editMode) {
         // PUT request to update the product
-        await fetch(`http://localhost:8080/products/${formData.id}`, {
+        await fetch(`${API_HOST}/${formData.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
       } else {
         // POST request to create a new product
-        await fetch("http://localhost:8080/products", {
+        await fetch(API_HOST, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
         });
       }
       // Revalidate the products list cache
-      mutate("http://localhost:8080/products");
+      mutate(API_HOST);
       handleClose();
       reset(); // Reset the form after submission
     } catch (error) {
@@ -72,19 +63,19 @@ const AddProducts: React.FC<AddProductsProps> = ({ open,handleClose,  editMode, 
 
   return (
     <div className="p-4">
-
       <Modal show={open} onClose={handleClose}>
         <Modal.Header>{editMode ? "Edit Product" : "Add New Product"}</Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FormInput
-              label="Title"
-              name="title"
+              label="Name"
+              name="name"
               type="text"
-              placeholder="Enter the product title"
+              placeholder="Enter the product Name"
               register={register}
               required={true}
-              errors={errors.title}
+              errors={errors.name}
+              className="dark:text-white"
             />
             <FormInput
               label="Price"
@@ -94,9 +85,10 @@ const AddProducts: React.FC<AddProductsProps> = ({ open,handleClose,  editMode, 
               register={register}
               required={true}
               errors={errors.price}
+               className="dark:text-white"
             />
             <div className="relative">
-              <label htmlFor="description" className="text-sm font-medium text-gray-700">
+              <label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-white">
                 Description
               </label>
               <textarea
@@ -117,6 +109,7 @@ const AddProducts: React.FC<AddProductsProps> = ({ open,handleClose,  editMode, 
               register={register}
               required={true}
               errors={errors.category}
+               className="dark:text-white"
             />
             <FormInput
               label="Image URL"
@@ -126,15 +119,17 @@ const AddProducts: React.FC<AddProductsProps> = ({ open,handleClose,  editMode, 
               register={register}
               required={true}
               errors={errors.image}
+               className="dark:text-white"
             />
             <FormInput
               label="Quantity"
-              name="quantity"
+              name="stockQuantity"
               type="number"
               placeholder="Enter product quantity"
               register={register}
               required={true}
-              errors={errors.quantity}
+              errors={errors.stockQuantity}
+               className="dark:text-white"
             />
             <Button type="submit" className="w-full bg-blue-600 text-white hover:bg-blue-700">
               {editMode ? "Update" : "Submit"}
