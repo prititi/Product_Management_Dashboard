@@ -4,11 +4,11 @@ import { useForm } from "react-hook-form";
 import { mutate } from "swr";
 import { Product } from "../../../types/types";
 import { API_HOST } from "../../../utils/constants";
-import { validationSchema } from "../../../utils/validationSchema";
+import { validationSchema } from "../../../utils/schema/validationSchema";
 import FormInput from "./FormInput";
 import { Button, Spinner } from "flowbite-react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useFetch } from "home/src/hooks/useFetch";
+import { useFetch } from "home/src/hooks/api/useFetch";
 
 interface ProductFormProps {
   open: boolean;
@@ -87,16 +87,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ open, handleModalState, editM
         required={true}
         errors={errors.stockQuantity}
       />
-      <Button type="submit" className="w-full">
-        {loading && <Spinner aria-label="Spinner button example" size="sm" />}
-        {loading ? (
-          <span className="pl-3">{editMode ? "Updating..." : "Creating..."}</span>
-        ) : editMode ? (
-          "Update"
-        ) : (
-          "Submit"
-        )}
-      </Button>
+      <div className="flex gap-2">
+        <Button onClick={() => handleModalState(false)} className="w-full">
+          Discard
+        </Button>
+        <Button type="submit" className="w-full">
+          {loading && <Spinner aria-label="Spinner button example" size="sm" />}
+          {loading ? (
+            <span className="pl-3">{editMode ? "Updating..." : "Creating..."}</span>
+          ) : editMode ? (
+            "Update"
+          ) : (
+            "Submit"
+          )}
+        </Button>
+      </div>
     </form>
   );
 };

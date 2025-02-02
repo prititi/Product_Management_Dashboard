@@ -23,3 +23,25 @@ export interface ProductModalProps {
   editData: Product | null;
   handleModalState: (open: boolean) => void;
 }
+
+export interface AuthContextType {
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  redirectUrl: string | null;
+  setRedirectUrl: (url: string | null) => void;
+}
+
+export interface LoginFormInputs {
+  username: string;
+  password: string;
+}
+
+export interface PaginationProps<T> {
+  table: Table<T>;
+}
+
+export type DeleteButtonProps = {
+  id: string;
+  apiUrl: string;
+};

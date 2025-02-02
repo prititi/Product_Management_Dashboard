@@ -1,61 +1,74 @@
-import { useAuth } from "home/src/context/AuthContext";
-import React, { useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Button, Card, Label, TextInput } from "flowbite-react";
+import { useAuth } from "home/src/hooks/auth/useAuth";
+import { LoginFormInputs } from "home/src/types/types";
+import { loginSchema } from "home/src/utils/schema/loginSchema";
+import Link from "next/link";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 const LoginForm: React.FC = () => {
   const { login, isAuthenticated } = useAuth();
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInputs>({
+    resolver: yupResolver(loginSchema),
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!username || !password) {
-      setError("Both fields are required");
-      return;
-    }
-    login(username, password);
+  const onSubmit = (data: LoginFormInputs) => {
+    login(data.username, data.password);
   };
 
   if (isAuthenticated) {
-    return <div>Welcome, you are logged in!</div>;
+    return (
+      <Card className="max-w-md mx-auto mt-10 text-center">
+        <h2 className="text-2xl font-bold text-green-600">Welcome!</h2>
+        <p className="text-gray-600">You are now logged in.</p>
+        <Link href="/" className="text-green-600">Go to Dashboard</Link>
+      </Card>
+    );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-sm mx-auto p-4">
-      <h2 className="text-xl font-bold mb-4">Login</h2>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <div className="mb-4">
-        <label htmlFor="username" className="block text-sm font-medium">
-          Username
-        </label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full px-3 py-2 border rounded"
-          placeholder="Enter your username"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="password" className="block text-sm font-medium">
-          Password
-        </label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 border rounded"
-          placeholder="Enter your password"
-        />
-      </div>
-      <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        Login
-      </button>
-    </form>
+    <Card className="w-[80%] md:max-w-md mx-auto mt-10 p-6 shadow-lg">
+      <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+        <div>
+          <Label htmlFor="username" className="text-gray-700">
+            Username
+          </Label>
+          <TextInput
+            id="username"
+            type="text"
+            placeholder="Enter your username"
+            {...register("username")}
+            color={errors.username ? "failure" : "gray"}
+          />
+          {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
+        </div>
+
+        <div>
+          <Label htmlFor="password" className="text-gray-700">
+            Password
+          </Label>
+          <TextInput
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            {...register("password")}
+            color={errors.password ? "failure" : "gray"}
+          />
+          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+        </div>
+
+        <Button type="submit" className="w-full">
+          Login
+        </Button>
+      </form>
+    </Card>
   );
 };
 

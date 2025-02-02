@@ -9,9 +9,11 @@ interface TableContainerProps<T> {
 
 export const TableContainer = <T,>({ table }: TableContainerProps<T>) => {
   return (
-    <table className="w-full border border-gray-300">
-      <TableHeaders table={table} flexRender={flexRender} />
-      <TableBody table={table} flexRender={flexRender} />
-    </table>
+    <div className="overflow-x-auto w-full ">
+      <table className="min-w-full table-auto border-collapse border border-gray-300">
+        <TableHeaders table={table} flexRender={flexRender} />
+        <TableBody table={table} flexRender={flexRender} />
+      </table>
+    </div>
   );
 };
