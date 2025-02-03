@@ -1,40 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Product Management Dashboard
+
+## Overview
+The Product Management Dashboard is a web application that allows users to manage products efficiently. The dashboard includes features for adding, updating, deleting, and displaying product details in a structured tabular format. Users can search, sort, and filter products for better visibility. The application ensures responsiveness across different screen sizes.
+
+## Frontend Features
+
+### Login Page
+- **User Authentication**: Secure login form for users.
+- **Session Management**: Uses React Context API to manage user sessions.
+
+### Dashboard
+- **Product Table**: Displays product details with the following fields:
+  - Product Name
+  - Price
+  - Category
+  - Stock Quantity
+  - Actions (Edit/Delete)
+- **Add Product**: A form to add new products.
+- **Update Product**: Inline editing or a modal to modify product details.
+- **Delete Product**: A delete button for each product with a confirmation dialog.
+
+### Search and Sort
+- **Search Functionality**: Filter products based on Product Name or Category.
+- **Sorting**: Column-based sorting for:
+  - Product Name
+  - Price
+  - Stock Quantity
+  - Category
+
+## Backend Features
+
+### Data Management
+- **API Fetching & Caching**: Uses SWR to fetch and cache product data from a mock API or locally defined API routes.
+- **Real-time Updates**: Ensures data updates (add, update, delete) are reflected using SWR’s revalidation mechanism.
+
+### API Endpoints
+- **Fetch Products**: GET `/products`
+- **Add Product**: POST `/products`
+- **Update Product**: PUT `/products/:id`
+- **Delete Product**: DELETE `/products/:id`
+
+## Enhancements (Optional but Encouraged)
+- **Pagination**: Implement pagination or infinite scrolling for better performance.
+- **Low Stock Highlighting**: Highlight rows where stock is less than 5 items.
+- **Category Filtering**: Dropdown filter to refine the product list.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- [Node.js](https://nodejs.org/) installed on your machine.
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/) for package management.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Installation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/prititi/Product_Management_Dashboard.git
+    cd Product_Management_Dashboard
+    ```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+2. Install dependencies:
+    ```sh
+    npm install
+    ```
+    or
+    ```sh
+    yarn install
+    ```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+3. Start the development server:
+    ```sh
+    npm run dev
+    ```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+### Deployment
+To deploy the application, follow the instructions for your hosting service (e.g., Vercel, Netlify). Ensure both frontend and backend are deployed and linked.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Backend deployment link:
+    ```sh
+    https://mock-api-4-b3a9.onrender.com/products
+    ```
 
-## Learn More
+2. Frontend deployment link:  [https://product-management-dashboard-zeta.vercel.app/](https://product-management-dashboard-zeta.vercel.app/)
+    
+## License
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-To learn more about Next.js, take a look at the following resources:
+## Contact
+For any questions or suggestions, please contact us at support@productdashboard.com.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Thank you for using our Product Management Dashboard!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
