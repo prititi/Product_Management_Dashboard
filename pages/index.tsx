@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { Button, Navbar, TextInput, Select } from "flowbite-react";
 import { LoadingAndError } from "home/src/components/product/LoadingAndError";
 import ProductModal from "home/src/components/product/modal/ProductModal";
-import { TableContainer } from "home/src/components/table/containers/TableContainer";
+import { TableContainer } from "home/src/components/tableParent/containers/TableContainer";
 import { useModalState } from "home/src/hooks/product/useModalState";
 import { useProductTable } from "home/src/hooks/product/useProductTable";
 import { useProducts } from "home/src/hooks/product/useProducts";
@@ -14,7 +14,7 @@ import { useAuth } from "home/src/hooks/auth/useAuth";
 import Link from "next/link";
 import { IoIosSearch } from "react-icons/io";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import { Pagination } from "home/src/components/table/components/Pagination";
+import { Pagination } from "home/src/components/tableParent/components/Pagination";
 import Image from "next/image";
 
 const Product = () => {

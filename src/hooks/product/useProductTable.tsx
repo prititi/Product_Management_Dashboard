@@ -9,7 +9,7 @@ import {
 import { Product } from "../../types/types";
 import { mutate } from "swr";
 import { useColumns } from "./useColumns";
-import { DefaultColumn } from "../../components/table/components/DefaultColumn";
+import { DefaultColumn } from "../../components/tableParent/components/DefaultColumn";
 import { useState } from "react";
 
 type UseProductTableProps = {
